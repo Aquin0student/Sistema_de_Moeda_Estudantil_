@@ -1,39 +1,40 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('/Back/Infraestructure/DB/.sql');
-const Aluno = require('./Aluno');
-const Professor = require('./Professor');
 
-class Transacao extends Model {}
+class Transacao extends Model {
+  static associate(models) {
+    this.belongsTo(models.Professor, { foreignKey: 'professorId' });
+    this.belongsTo(models.Aluno, { foreignKey: 'alunoId' });
+  }
+}
 
 Transacao.init({
-    id: {
-        type: DataTypes.BIGINT,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    data: DataTypes.DATE,
-    valor: DataTypes.DOUBLE,
-    motivo: DataTypes.STRING,
-    status: DataTypes.STRING,
-    alunoId: {
-        type: DataTypes.BIGINT,
-        references: {
-            model: Aluno,
-            key: 'id'
-        }
-    },
-    professorId: {
-        type: DataTypes.BIGINT,
-        references: {
-            model: Professor,
-            key: 'id'
-        }
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  professorId: {
+    type: DataTypes.BIGINT,
+    references: {
+      model: 'Professor',
+      key: 'id'
     }
+  },
+  alunoId: {
+    type: DataTypes.BIGINT,
+    references: {
+      model: 'Aluno',
+      key: 'id'
+    }
+  },
+  dataTransacao: DataTypes.DATE,
+  valor: DataTypes.DECIMAL
 }, {
-    sequelize,
-    modelName: 'Transacao',
-    tableName: 'Transacao',
-    timestamps: false
+  sequelize,
+  modelName: 'Transacao',
+  tableName: 'Transacao',
+  timestamps: false
 });
 
 module.exports = Transacao;

@@ -1,25 +1,24 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('/Back/Infraestructure/DB/.sql');
-const Usuario = require('./Usuario');
 
-class EmpresaParceira extends Model {}
+class EmpresaParceira extends Model {
+  static associate(models) {
+    this.belongsTo(models.Usuario, { foreignKey: 'id' });
+    this.hasMany(models.Vantagem, { foreignKey: 'empresaParceiraId' });
+  }
+}
 
 EmpresaParceira.init({
-    id: {
-        type: DataTypes.BIGINT,
-        primaryKey: true,
-        references: {
-            model: Usuario,
-            key: 'id'
-        }
-    },
-    cnpj: DataTypes.STRING,
-    endereco: DataTypes.STRING
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true
+  },
+  cnpj: DataTypes.STRING
 }, {
-    sequelize,
-    modelName: 'EmpresaParceira',
-    tableName: 'EmpresaParceira',
-    timestamps: false
+  sequelize,
+  modelName: 'EmpresaParceira',
+  tableName: 'EmpresaParceira',
+  timestamps: false
 });
 
 module.exports = EmpresaParceira;
