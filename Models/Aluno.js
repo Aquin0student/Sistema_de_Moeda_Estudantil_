@@ -1,6 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Instituicao = require('../Models/Instituicao')
 const Transacao = require('../Models/Transacao')
 const Vantagem = require('../Models/Vantagem')
 const Cupom = require('../Models/Cupom')

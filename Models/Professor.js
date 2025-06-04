@@ -20,6 +20,5 @@ Professor.init({
   timestamps: false
 });
 
-Professor.hasMany(Transacao, { foreignKey: 'professorId' })
 
 module.exports = Professor;
