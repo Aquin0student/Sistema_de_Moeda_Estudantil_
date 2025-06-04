@@ -10,7 +10,8 @@ EmpresaParceira.init({
     type: DataTypes.BIGINT,
     primaryKey: true
   },
-  cnpj: DataTypes.STRING
+  cnpj: DataTypes.STRING,
+  endereco: DataTypes.STRING
 }, {
   sequelize,
   modelName: 'EmpresaParceira',

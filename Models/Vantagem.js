@@ -13,7 +13,6 @@ Vantagem.init({
     primaryKey: true,
     autoIncrement: true
   },
-  titulo: DataTypes.STRING,
   descricao: DataTypes.STRING,
   empresaParceiraId: {
     type: DataTypes.BIGINT,
@@ -21,7 +20,8 @@ Vantagem.init({
       model: 'EmpresaParceira',
       key: 'id'
     }
-  }
+  },
+  custoMoedas: DataTypes.INTEGER
 }, {
   sequelize,
   modelName: 'Vantagem',
@@ -30,6 +30,5 @@ Vantagem.init({
 });
 
 
-Vantagem.belongsTo(EmpresaParceira, { foreignKey: 'empresaParceiraId' })
 
 module.exports = Vantagem;
