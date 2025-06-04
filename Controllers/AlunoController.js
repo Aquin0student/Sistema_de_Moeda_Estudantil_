@@ -1,0 +1,56 @@
+const AlunoFactory = require('../Factories/AlunoFactory');
+const Aluno = require('/Models/Aluno');
+
+module.exports = {
+  async criar(req, res) {
+    try {
+      const aluno = await AlunoFactory.createAndSave(req.body);
+      res.status(201).json(aluno);
+    } catch (err) {
+      res.status(400).json({ erro: err.message });
+    }
+  },
+
+  async listar(req, res) {
+    try {
+      const alunos = await Aluno.findAll();
+      res.status(200).json(alunos);
+    } catch (err) {
+      res.status(500).json({ erro: err.message });
+    }
+  },
+
+  async obterPorId(req, res) {
+    try {
+      const aluno = await Aluno.findByPk(req.params.id);
+      if (!aluno) return res.status(404).json({ erro: 'Aluno não encontrado' });
+      res.status(200).json(aluno);
+    } catch (err) {
+      res.status(500).json({ erro: err.message });
+    }
+  },
+
+  async atualizar(req, res) {
+    try {
+      const aluno = await Aluno.findByPk(req.params.id);
+      if (!aluno) return res.status(404).json({ erro: 'Aluno não encontrado' });
+
+      await aluno.update(req.body);
+      res.status(200).json(aluno);
+    } catch (err) {
+      res.status(400).json({ erro: err.message });
+    }
+  },
+
+  async deletar(req, res) {
+    try {
+      const aluno = await Aluno.findByPk(req.params.id);
+      if (!aluno) return res.status(404).json({ erro: 'Aluno não encontrado' });
+
+      await aluno.destroy();
+      res.status(204).send();
+    } catch (err) {
+      res.status(400).json({ erro: err.message });
+    }
+  }
+};
