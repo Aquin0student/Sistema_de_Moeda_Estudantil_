@@ -1,25 +1,27 @@
 const Professor = require('../Models/Professor');
 const Aluno = require('../Models/Aluno')
 const {consultarExtrato} = require("./AlunoController");
+const Transacao = require('../Models/Transacao')
+const TransacaoFactory = require('../Factories/TransacaoFactory')
 
 module.exports = {
   async consultarExtrato(req, res) {
     try {
-      const usuarioId = req.session.usuarioId;
+        const usuarioId = req.session.usuarioId;
 
-      if (!usuarioId) {
-        return res.status(401).json({ error: 'Usuário não autenticado' });
-      }
+        if (!usuarioId) {
+            return res.status(401).json({ error: 'Usuário não autenticado' });
+        }
 
-      const professor = await Professor.findByPk(usuarioId);
+        const professor = await Professor.findByPk(usuarioId);
 
-      if (!professor) {
-        return res.status(404).json({ error: 'Professor não encontrado' });
-      }
+        if (!professor) {
+            return res.status(404).json({ error: 'Professor não encontrado' });
+        }
 
-      return res.status(200).json({
-        saldoMoedas: professor.saldoMoedas
-      });
+        return res.status(200).json({
+            saldoMoedas: professor.saldoMoedas
+        });
 
     } catch (error) {
       console.error('Erro ao buscar saldo do professor:', error);
@@ -27,55 +29,67 @@ module.exports = {
     }
   },
 
-    async distribuirMoedas(req, res){
-      try{
-          const usuarioId = req.session.usuarioId;
+    async distribuirMoedas(req, res) {
+  try {
+    const dataAtual = new Date();
+    const dataAtualFormatada = dataAtual.toLocaleString();
 
-          if (!usuarioId) {
-              return res.status(401).json({ error: 'Usuário não autenticado' });
-            }
+    const usuarioId = req.session.usuarioId;
 
-          const professor = await Professor.findByPk(usuarioId);
+    if (!usuarioId) {
+      return res.status(401).json({ error: 'Usuário não autenticado' });
+    }
 
-          if (!professor) {
-            return res.status(404).json({ error: 'Professor não encontrado' });
-          }
+    const professor = await Professor.findByPk(usuarioId);
 
-          const {alunoId, moedas} = req.body
+    if (!professor) {
+      return res.status(404).json({ error: 'Professor não encontrado' });
+    }
 
-          if(!alunoId || !moedas){
-              return res.status(400).json({ error: 'Preencha todos os campos' })
-          }
+    const { alunoId, moedas, motivo } = req.body;
 
-          const aluno = await Aluno.findByPk(alunoId)
+    if (!alunoId || !moedas || !motivo) {
+      return res.status(400).json({ error: 'Preencha todos os campos' });
+    }
 
-          if(!aluno){
-              return res.status(404).json({ error: 'Aluno não encontrado' })
-          }
+    const aluno = await Aluno.findByPk(alunoId);
 
-          if(professor.saldoMoedas < moedas){
-              return res.status(400).json({ error: 'Saldo insuficiente' });
-          }
+    if (!aluno) {
+      return res.status(404).json({ error: 'Aluno não encontrado' });
+    }
 
-          professor.saldoMoedas -= moedas;
-          aluno.saldoMoedas += moedas;
+    if (professor.saldoMoedas < moedas) {
+      return res.status(400).json({ error: 'Saldo insuficiente' });
+    }
 
-          await professor.save();
-          await aluno.save();
+    await TransacaoFactory.createTransacao({
+      data: dataAtualFormatada,
+      valor: moedas,
+      motivo,
+      professorId: professor.id,
+      alunoId
+    });
 
-          return res.status(200).json({
-              message: 'Moedas distribuídas com sucesso',
-              saldoProfessor: professor.saldoMoedas,
-              saldoAluno: aluno.saldoMoedas
-          });
+    professor.saldoMoedas -= moedas;
+    aluno.saldoMoedas += moedas;
 
-      }catch (error){
-      console.error('Erro ao distribuir moedas:', error);
-      return res.status(500).json({
+    await professor.save();
+    await aluno.save();
+
+    return res.status(200).json({
+      message: 'Moedas distribuídas com sucesso',
+      saldoProfessor: professor.saldoMoedas,
+      saldoAluno: aluno.saldoMoedas
+    });
+
+  } catch (error) {
+    console.error('Erro ao distribuir moedas:', error);
+    return res.status(500).json({
       error: 'Erro ao distribuir moedas.',
       message: error.message,
       details: error.errors
-  });
-    }
-    }
+    });
+  }
+}
+
 };

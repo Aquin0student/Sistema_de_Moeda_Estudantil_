@@ -7,7 +7,6 @@ const Professor = require("../Models/Professor")
 class Transacao extends Model {}
 
 
-
 Transacao.init({
   id: {
     type: DataTypes.BIGINT,
@@ -28,8 +27,9 @@ Transacao.init({
       key: 'id'
     }
   },
-  dataTransacao: DataTypes.DATE,
-  valor: DataTypes.DECIMAL
+  data: DataTypes.DATE,
+  valor: DataTypes.INTEGER,
+  motivo: DataTypes.STRING
 }, {
   sequelize,
   modelName: 'Transacao',
@@ -37,7 +37,5 @@ Transacao.init({
   timestamps: false
 });
 
-// Transacao.belongsTo(Professor, { foreignKey: 'professorId' })
-// Transacao.belongsTo(Aluno, { foreignKey: 'alunoId' })
 
 module.exports = Transacao;
