@@ -1,10 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Aluno = require('../Models/Aluno')
 const Professor = require("../Models/Professor")
 
 class Instituicao extends Model {}
-
 
 
 Instituicao.init({
@@ -13,8 +11,7 @@ Instituicao.init({
     primaryKey: true,
     autoIncrement: true
   },
-  nome: DataTypes.STRING,
-  endereco: DataTypes.STRING
+  nome: DataTypes.STRING
 }, {
   sequelize,
   modelName: 'Instituicao',
@@ -22,7 +19,6 @@ Instituicao.init({
   timestamps: false
 });
 
-Instituicao.hasMany(Professor, {foreignKey: 'instituicaoId'})
 
 
 module.exports = Instituicao;

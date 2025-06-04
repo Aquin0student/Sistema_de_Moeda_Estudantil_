@@ -1,5 +1,7 @@
 const Aluno = require('../Models/Aluno');
 const Usuario = require("../Models/Usuario");
+const Instituicao = require("../Models/Instituicao");
+const AlunoInstituicao = require('../Models/AlunoInstituicao')
 
 class AlunoSequelizeFactory {
   /**
@@ -28,9 +30,24 @@ class AlunoSequelizeFactory {
    * Cria e salva um Usuario Aluno de uma vez no banco de dados.
    */
 
-  static async createUsuarioAluno({ nome, email, cpf, senha, curso, instituicaoId, endereco, rg }) {
-  const usuario = await Usuario.create({ nome, email, cpf, senha });
-  const aluno = await Aluno.create({ id: usuario.id, curso, instituicaoId, endereco, rg });
+  static async createUsuarioAluno({ nome, email, cpf, senha, curso, instituicao_id, endereco, rg }) {
+    const usuario = await Usuario.create({ nome, email, cpf, senha });
+    const aluno = await Aluno.create({ id: usuario.id, curso, endereco, rg });
+
+    const instituicao = await Instituicao.findByPk(instituicao_id)
+      if (!instituicao) {
+      throw new Error('Instituição não encontrada');
+    }
+
+    await AlunoInstituicao.create({ alunoId: usuario.id, instituicaoId: instituicao_id });
+
+
+    if(!AlunoInstituicao){
+      throw new Error('Erro ao salvar na tabela alunoinstituicao');
+    }
+
+
+
   return { usuario, aluno };
 }
 }

@@ -12,6 +12,8 @@ dotenv.config({ path: '.env' });
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const alunoRouter = require('./routes/AlunoRoute')
+const professorRouter = require('./routes/ProfessorRoute')
 
 const app = express();
 
@@ -58,6 +60,8 @@ const isAuthenticated = (req, res, next) => {
 
 // Rotas
 app.use('/', usersRouter);
+app.use('/aluno', alunoRouter);
+app.use('/professor', professorRouter)
 
 // Erros
 app.use(function(req, res, next) {

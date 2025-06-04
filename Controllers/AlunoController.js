@@ -1,5 +1,5 @@
 const AlunoFactory = require('../Factories/AlunoFactory');
-const Aluno = require('/Models/Aluno');
+const Aluno = require('../Models/Aluno');
 
 module.exports = {
   async criar(req, res) {
@@ -50,7 +50,32 @@ module.exports = {
       await aluno.destroy();
       res.status(204).send();
     } catch (err) {
-      res.status(400).json({ erro: err.message });
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  async consultarExtrato(req, res){
+    try{
+      const usuarioId = req.session.usuarioId;
+
+      if(!usuarioId){
+        return res.status(401).json({ error: 'Usuário não autenticado' });
+      }
+
+      const aluno = await Aluno.findByPk(usuarioId)
+
+      if (!aluno) {
+      return res.status(404).json({ error: 'Aluno não encontrado' });
+    }
+
+      return res.status(200).json({
+      saldoMoedas: aluno.saldoMoedas
+
+    });
+
+    }catch(error){
+      console.error('Erro ao consultar saldo:', error);
+      res.status(400).json({ error: error.message });
     }
   }
 };

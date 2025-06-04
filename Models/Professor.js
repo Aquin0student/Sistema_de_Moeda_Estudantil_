@@ -1,7 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Usuario = require('../Models/Usuario')
-const Instituicao = require('../Models/Instituicao')
 const Transacao = require('../Models/Transacao')
 
 
@@ -12,22 +10,15 @@ Professor.init({
     type: DataTypes.BIGINT,
     primaryKey: true
   },
-  matricula: DataTypes.STRING,
-  instituicaoId: {
-    type: DataTypes.BIGINT,
-    references: {
-      model: 'Instituicao',
-      key: 'id'
-    }
-  }
+  nome: DataTypes.STRING,
+  departamento: DataTypes.STRING,
+  saldoMoedas: DataTypes.INTEGER
 }, {
   sequelize,
   modelName: 'Professor',
   tableName: 'Professor',
   timestamps: false
 });
-
-
 
 Professor.hasMany(Transacao, { foreignKey: 'professorId' })
 

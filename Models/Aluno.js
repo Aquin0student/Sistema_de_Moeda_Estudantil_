@@ -22,14 +22,7 @@ Aluno.init({
   saldoMoedas: {
     type: DataTypes.DOUBLE
   },
-  curso: DataTypes.STRING,
-  instituicaoId: {
-    type: DataTypes.BIGINT,
-    references: {
-      model: 'Instituicao',
-      key: 'id'
-    }
-  }
+  curso: DataTypes.STRING
 }, {
   sequelize,
   modelName: 'Aluno',
@@ -38,8 +31,8 @@ Aluno.init({
 });
 
 
-Aluno.belongsTo(Instituicao, {foreignKey: 'instituicaoId'})
-Aluno.belongsTo(Transacao, {foreignKey: 'alunoId'})
+Aluno.hasMany(Transacao, { foreignKey: 'alunoId' })
+
 Aluno.belongsToMany(Vantagem, {
   through: Cupom,
   foreignKey: "alunoId",
