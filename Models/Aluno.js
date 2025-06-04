@@ -1,6 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Usuario = require('../Models/Usuario')
 const Instituicao = require('../Models/Instituicao')
 const Transacao = require('../Models/Transacao')
 const Vantagem = require('../Models/Vantagem')
@@ -13,6 +12,15 @@ Aluno.init({
   id: {
     type: DataTypes.BIGINT,
     primaryKey: true
+  },
+  rg: {
+    type: DataTypes.STRING
+  },
+  endereco: {
+    type: DataTypes.STRING
+  },
+  saldoMoedas: {
+    type: DataTypes.DOUBLE
   },
   curso: DataTypes.STRING,
   instituicaoId: {

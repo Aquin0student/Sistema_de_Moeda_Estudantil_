@@ -28,9 +28,9 @@ class AlunoSequelizeFactory {
    * Cria e salva um Usuario Aluno de uma vez no banco de dados.
    */
 
-  static async createUsuarioAluno({ nome, email, cpf, senha, curso, instituicaoId }) {
+  static async createUsuarioAluno({ nome, email, cpf, senha, curso, instituicaoId, endereco, rg }) {
   const usuario = await Usuario.create({ nome, email, cpf, senha });
-  const aluno = await Aluno.create({ id: usuario.id, curso, instituicaoId });
+  const aluno = await Aluno.create({ id: usuario.id, curso, instituicaoId, endereco, rg });
   return { usuario, aluno };
 }
 }
