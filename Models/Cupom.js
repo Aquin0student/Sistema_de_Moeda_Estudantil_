@@ -27,15 +27,13 @@ Cupom.init({
     }
   },
   codigo: DataTypes.STRING,
-  usado: DataTypes.BOOLEAN
+  status: DataTypes.STRING
 }, {
   sequelize,
   modelName: 'Cupom',
   tableName: 'Cupom',
   timestamps: false
 });
-
-
 
 
 module.exports = Cupom;

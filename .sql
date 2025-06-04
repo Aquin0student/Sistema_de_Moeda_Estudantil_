@@ -68,10 +68,12 @@ CREATE TABLE Vantagem (
 -- Tabela Cupom
 CREATE TABLE Cupom (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    codigo VARCHAR(100) NOT NULL,
+    codigo VARCHAR(100) UNIQUE NOT NULL DEFAULT (SUBSTRING(MD5(RAND()), 1, 10)),
     dataValidade DATE,
     status VARCHAR(50),
     vantagemId BIGINT,
+    alunoId BIGINT,
+    foreign key (alunoId) references Aluno(id),
     FOREIGN KEY (vantagemId) REFERENCES Vantagem(id)
 );
 
