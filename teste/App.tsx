@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
-import styles from '../styles/style-login';
+import styles from './styles/style-login';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');

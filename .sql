@@ -15,7 +15,7 @@ CREATE TABLE Usuario (
 CREATE TABLE Professor (
     id BIGINT PRIMARY KEY,
     departamento VARCHAR(100),
-    saldoMoedas DOUBLE DEFAULT 0,
+    saldoMoedas DOUBLE DEFAULT 1000,
     FOREIGN KEY (id) REFERENCES Usuario(id)
 );
 
@@ -25,6 +25,7 @@ CREATE TABLE Aluno (
     rg VARCHAR(20),
     endereco VARCHAR(255),
     saldoMoedas DOUBLE DEFAULT 0,
+    curso VARCHAR(255),
     FOREIGN KEY (id) REFERENCES Usuario(id)
 );
 
@@ -46,7 +47,7 @@ CREATE TABLE Instituicao (
 CREATE TABLE Transacao (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     data DATE NOT NULL,
-    valor DOUBLE NOT NULL,
+    valor INT NOT NULL,
     motivo VARCHAR(255),
     status VARCHAR(50),
     professorId BIGINT,
@@ -59,7 +60,7 @@ CREATE TABLE Transacao (
 CREATE TABLE Vantagem (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     descricao VARCHAR(255),
-    custoMoedas DOUBLE NOT NULL,
+    custoMoedas INT NOT NULL,
     foto BLOB,
     empresaParceiraId BIGINT,
     FOREIGN KEY (empresaParceiraId) REFERENCES EmpresaParceira(id)
@@ -69,7 +70,6 @@ CREATE TABLE Vantagem (
 CREATE TABLE Cupom (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     codigo VARCHAR(100) UNIQUE NOT NULL DEFAULT (SUBSTRING(MD5(RAND()), 1, 10)),
-    dataValidade DATE,
     status VARCHAR(50),
     vantagemId BIGINT,
     alunoId BIGINT,
@@ -96,18 +96,19 @@ CREATE TABLE AlunoInstituicao (
 );
 
 
-INSERT INTO Usuario (nome, email, cpf, senha) VALUES
-('Carlos Silva', 'carlos@edu.com', '123.456.789-00', 'senha123'),
-('Maria Souza', 'maria@edu.com', '987.654.321-00', 'senha456'),
-('Empresa ABC', 'contato@empresaabc.com', '111.222.333-44', 'parceira2024');
+-- Usuários (superclasse)
+INSERT INTO Usuario (id, nome, email, cpf, senha) VALUES
+(1, 'Carlos Silva', 'carlos@edu.com', '123.456.789-00', 'senha123'),
+(2, 'Maria Souza', 'maria@edu.com', '987.654.321-00', 'senha456'),
+(3, 'Empresa ABC', 'contato@empresaabc.com', '111.222.333-44', 'parceira2024');
 
--- Professores
+-- Professor
 INSERT INTO Professor (id, departamento, saldoMoedas) VALUES
-(1, 'Engenharia de Software', 100.0);
+(1, 'Engenharia de Software', 1000.0);
 
--- Alunos
-INSERT INTO Aluno (id, rg, endereco, saldoMoedas) VALUES
-(2, 'MG-11.222.333', 'Rua das Acácias, 123', 50.0);
+-- Aluno
+INSERT INTO Aluno (id, rg, endereco, saldoMoedas, curso) VALUES
+(2, 'MG-11.222.333', 'Rua das Acácias, 123', 50.0, 'Ciência da Computação');
 
 -- Empresa Parceira
 INSERT INTO EmpresaParceira (id, cnpj, endereco) VALUES
@@ -118,26 +119,26 @@ INSERT INTO Instituicao (nome) VALUES
 ('Universidade Federal do Exemplo'),
 ('Instituto de Ensino Tecnológico');
 
--- Associação Aluno-Instituição
+-- Relacionamento Professor-Instituição
+INSERT INTO ProfessorInstituicao (professorId, instituicaoId) VALUES
+(1, 1);
+
+-- Relacionamento Aluno-Instituição
 INSERT INTO AlunoInstituicao (alunoId, instituicaoId) VALUES
 (2, 1),
 (2, 2);
 
--- Associação Professor-Instituição
-INSERT INTO ProfessorInstituicao (professorId, instituicaoId) VALUES
-(1, 1);
-
 -- Transações
 INSERT INTO Transacao (data, valor, motivo, status, professorId, alunoId) VALUES
-(CURDATE(), 20.0, 'Bônus por participação', 'Aprovada', 1, 2),
-(CURDATE(), -10.0, 'Resgate de vantagem', 'Aprovada', NULL, 2);
+(CURDATE(), 20, 'Bônus por participação', 'Aprovada', 1, 2),
+(CURDATE(), -10, 'Resgate de vantagem', 'Aprovada', NULL, 2);
 
 -- Vantagens
 INSERT INTO Vantagem (descricao, custoMoedas, foto, empresaParceiraId) VALUES
-('Desconto de 10% em livros', 10.0, NULL, 3),
-('Brinde exclusivo', 20.0, NULL, 3);
+('Desconto de 10% em livros', 10, NULL, 3),
+('Brinde exclusivo', 20, NULL, 3);
 
--- Cupons
-INSERT INTO Cupom (codigo, dataValidade, status, vantagemId) VALUES
-('ABC10DESCONTO', DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'Ativo', 1),
-('BRINDE2024', DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'Ativo', 2);
+-- Cupons (agora com vínculo ao aluno)
+INSERT INTO Cupom (codigo, status, vantagemId, alunoId) VALUES
+('ABC10DESCONTO', 'Ativo', 1, 2),
+('BRINDE2024', 'Ativo', 2, 2);

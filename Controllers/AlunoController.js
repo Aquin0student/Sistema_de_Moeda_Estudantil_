@@ -85,33 +85,37 @@ module.exports = {
     try{
       const usuarioId = req.session.usuarioId;
 
-    if(!usuarioId){
-      return res.status(401).json({ error: 'Usuário não autenticado' });
-    }
+      if(!usuarioId){
+        return res.status(401).json({ error: 'Usuário não autenticado' });
+      }
 
-    const aluno = await Aluno.findByPk(usuarioId)
+      const aluno = await Aluno.findByPk(usuarioId)
 
-    if (!aluno) {
-      return res.status(404).json({ error: 'Aluno não encontrado' });
-    }
+      if (!aluno) {
+        return res.status(404).json({ error: 'Aluno não encontrado' });
+      }
 
-    const { vantagemId } = req.body
+      const { vantagemId } = req.body
 
-    if(!vantagemId){
-      return res.status(400).json({ error: 'Preencha todos os campos' });
-    }
+      if(!vantagemId){
+        return res.status(400).json({ error: 'Preencha todos os campos' });
+      }
 
-    const vantagem = Vantagem.findByPk(vantagemId)
+      const vantagem = Vantagem.findByPk(vantagemId)
 
-    if(!vantagem){
-      return res.status(404).json({ error: 'Vantagem não encontrada' });
-    }
+      if(!vantagem){
+        return res.status(404).json({ error: 'Vantagem não encontrada' });
+      }
 
-    const cupom = await CupomFactory.createCupom({
-                vantagemId: vantagemId,
-                alunoId: usuarioId,
-                status: "Ativo"
-            })
+      const cupom = await CupomFactory.createCupom({
+                  vantagemId: vantagemId,
+                  alunoId: usuarioId,
+                  status: "Ativo"
+              })
+
+      const custo = vantagem.custoMoedas
+
+
 
     return res.status(200).json({
                 message: 'Cupom criado com sucesso',
