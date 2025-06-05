@@ -1,5 +1,7 @@
 const AlunoFactory = require('../Factories/AlunoFactory');
 const Aluno = require('../Models/Aluno');
+const Vantagem = require('../Models/Vantagem')
+const CupomFactory = require("../Factories/CupomFactory");
 
 module.exports = {
   async criar(req, res) {
@@ -77,5 +79,55 @@ module.exports = {
       console.error('Erro ao consultar saldo:', error);
       res.status(400).json({ error: error.message });
     }
+  },
+
+  async resgatarVantagem(req, res){
+    try{
+      const usuarioId = req.session.usuarioId;
+
+    if(!usuarioId){
+      return res.status(401).json({ error: 'Usuário não autenticado' });
+    }
+
+    const aluno = await Aluno.findByPk(usuarioId)
+
+    if (!aluno) {
+      return res.status(404).json({ error: 'Aluno não encontrado' });
+    }
+
+    const { vantagemId } = req.body
+
+    if(!vantagemId){
+      return res.status(400).json({ error: 'Preencha todos os campos' });
+    }
+
+    const vantagem = Vantagem.findByPk(vantagemId)
+
+    if(!vantagem){
+      return res.status(404).json({ error: 'Vantagem não encontrada' });
+    }
+
+    const cupom = await CupomFactory.createCupom({
+                vantagemId: vantagemId,
+                alunoId: usuarioId,
+                status: "Ativo"
+            })
+
+    return res.status(200).json({
+                message: 'Cupom criado com sucesso',
+                cupom: cupom.codigo,
+                vantagemId: vantagemId,
+                alunoId: usuarioId
+            });
+
+    }catch (error){
+            console.error('Erro ao criar cupom:', error);
+            return res.status(500).json({
+                error: 'Erro ao criar cupom.',
+                message: error.message,
+                details: error.errors
+  });
+    }
+
   }
 };

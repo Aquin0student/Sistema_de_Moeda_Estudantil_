@@ -15,7 +15,6 @@ const usersRouter = require('./routes/users');
 const alunoRouter = require('./routes/AlunoRoute')
 const professorRouter = require('./routes/ProfessorRoute')
 const empresaRouter = require('./routes/EmpresaRouter')
-const CupomRouter = require('./routes/CupomRoute')
 
 const app = express();
 
@@ -64,7 +63,8 @@ const isAuthenticated = (req, res, next) => {
 app.use('/', usersRouter);
 app.use('/aluno', alunoRouter);
 app.use('/professor', professorRouter)
-app.use('/aluno', empresaRouter, CupomRouter)
+app.use('/empresa', empresaRouter)
+
 
 // Erros
 app.use(function(req, res, next) {

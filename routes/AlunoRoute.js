@@ -5,4 +5,6 @@ const {verificarAutenticacao} = require("../Middlewares/Autenticador");
 
 router.get("/consultarExtrato", verificarAutenticacao, AlunoController.consultarExtrato)
 
+router.post('/resgatarVantagem', verificarAutenticacao, AlunoController.resgatarVantagem)
+
 module.exports = router;
